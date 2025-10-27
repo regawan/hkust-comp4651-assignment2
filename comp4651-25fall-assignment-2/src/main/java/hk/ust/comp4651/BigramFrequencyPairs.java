@@ -81,6 +81,7 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 
 		// Reuse objects.
 		private final static FloatWritable VALUE = new FloatWritable();
+		private int marginal = 0;
 
 		@Override
 		public void reduce(PairOfStrings key, Iterable<IntWritable> values,
@@ -90,12 +91,11 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 			 */
 			Iterator<IntWritable> iter = values.iterator();
 			int sum = 0;
-			int marginal = 0;
 			while (iter.hasNext()) {
 				sum += iter.next().get();
 			}
 			// Handle marginal helper keys
-			if (key.getRightElement().toString().equals("")) {
+			if (key.getRightElement().isEmpty()) {
 				marginal = sum;
 				VALUE.set((float) sum);
 			} else if (marginal != 0) {
