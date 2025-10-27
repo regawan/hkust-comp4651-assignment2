@@ -102,9 +102,9 @@ public class BigramFrequencyStripes extends Configured implements Tool {
 				SUM_STRIPES.plus(iter.next());
 			}
       // Count the marginal
-      int marginal = 0;
+      int marginal = 1;
       for (int count : SUM_STRIPES.values()) {
-        marginal += count;
+        //marginal += count;
       }
       if (marginal != 0) {
         for (Entry<String, Integer> mapElement : SUM_STRIPES.entrySet()) { 
