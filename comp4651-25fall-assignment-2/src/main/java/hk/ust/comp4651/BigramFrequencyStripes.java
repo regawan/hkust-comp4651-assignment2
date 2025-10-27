@@ -54,6 +54,21 @@ public class BigramFrequencyStripes extends Configured implements Tool {
 			/*
 			 * TODO: Your implementation goes here.
 			 */
+      // Just the same as we can do the frequency calc in reducer
+			if (words.length > 1){
+				KEY.set( words[0]);
+				for (int i = 1; i < words.length; i++) {
+					String w = words[i];
+					// Skip empty words
+					if (w.length() == 0) {
+						continue;
+					}
+					STRIPE.increment(w);
+					context.write(KEY, STRIPE);
+					KEY.set(w);
+					STRIPE.clear();
+				}
+			}
 		}
 	}
 
@@ -75,6 +90,30 @@ public class BigramFrequencyStripes extends Configured implements Tool {
 			/*
 			 * TODO: Your implementation goes here
 			 */
+
+			/*
+			 * The output must be a sequence of key-value pairs of <bigram,
+			 * count>, the same as that of the "pairs" approach
+			 */
+			Iterator<HashMapStringIntWritable> iter = stripes.iterator();
+			String first_w = key.toString();
+			while (iter.hasNext()) {
+				SUM_STRIPES.plus(iter.next());
+			}
+      // Count the marginal
+      int marginal = 0;
+      for (int count : SUM_STRIPES.values()) {
+        marginal += count;
+      }
+      for (Entry<String, Integer> mapElement : SUM_STRIPES.entrySet()) { 
+        String second_w = (String) mapElement.getKey(); 
+        int value = (int) mapElement.getValue();
+        BIGRAM.set(first_w, second_w);
+        FREQ.set(value / marginal);
+        context.write(BIGRAM, FREQ);
+      }
+      
+      SUM_STRIPES.clear();
 		}
 	}
 
@@ -94,6 +133,16 @@ public class BigramFrequencyStripes extends Configured implements Tool {
 			/*
 			 * TODO: Your implementation goes here
 			 */
+			// Again reuse
+      Iterator<HashMapStringIntWritable> iter = stripes.iterator();
+
+			while (iter.hasNext()) {
+				for ( String second_w : iter.next().keySet() ) {
+					SUM_STRIPES.increment(second_w);
+				}
+			}
+			context.write(key, SUM_STRIPES);
+			SUM_STRIPES.clear();
 		}
 	}
 
