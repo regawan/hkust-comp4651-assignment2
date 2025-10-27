@@ -102,16 +102,21 @@ public class BigramFrequencyStripes extends Configured implements Tool {
 				SUM_STRIPES.plus(iter.next());
 			}
       // Count the marginal
-      int marginal = 1;
+      int marginal = 0;
       for (int count : SUM_STRIPES.values()) {
-        //marginal += count;
+        marginal += count;
       }
+      
+      BIGRAM.set(first_w, "");
+      FREQ.set((float) marginal);
+      context.write(BIGRAM, FREQ);
+      
       if (marginal != 0) {
         for (Entry<String, Integer> mapElement : SUM_STRIPES.entrySet()) { 
           String second_w = (String) mapElement.getKey(); 
           int value = (int) mapElement.getValue();
           BIGRAM.set(first_w, second_w);
-          FREQ.set(value / marginal);
+          FREQ.set((float) value / (float) marginal);
           context.write(BIGRAM, FREQ);
         }
       }

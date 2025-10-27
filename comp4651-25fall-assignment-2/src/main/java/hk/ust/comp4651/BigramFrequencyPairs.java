@@ -62,12 +62,12 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 					if (w.length() == 0) {
 						continue;
 					}
+					// Emit marginal count helper pair
+					BIGRAM.set(previous_word, "");
+					context.write(BIGRAM, ONE);
 					BIGRAM.set(previous_word, w);
 					context.write(BIGRAM, ONE);
-          // Emit marginal count helper pair
-          BIGRAM.set(previous_word, "");
-					context.write(BIGRAM, ONE);
-          previous_word = w;
+					previous_word = w;
 				}
 			}
 		}
@@ -90,17 +90,20 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 			 */
 			Iterator<IntWritable> iter = values.iterator();
 			int sum = 0;
-      int marginal = 0;
+			int marginal = 0;
 			while (iter.hasNext()) {
 				sum += iter.next().get();
 			}
 			// Handle marginal helper keys
-      if (key.getRightElement() == "") {
-        marginal = sum;
-      } else if (marginal != 0) {
-        VALUE.set(sum / marginal);
-			  context.write(key, VALUE);
-      }
+			if (key.getRightElement().toString().equals("")) {
+				marginal = sum;
+				VALUE.set((float) sum);
+			} else if (marginal != 0) {
+				VALUE.set((float) sum / (float) marginal);
+			} else {
+				VALUE.set((float) sum);
+			}
+			context.write(key, VALUE);
 		}
 	}
 	
@@ -115,12 +118,12 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 			 * TODO: Your implementation goes here.
 			 */
 			// Simply reuse reducer of counter version
-      Iterator<IntWritable> iter = values.iterator();
+			Iterator<IntWritable> iter = values.iterator();
 			int sum = 0;
 			while (iter.hasNext()) {
 				sum += iter.next().get();
 			}
-      SUM.set(sum);
+			SUM.set(sum);
 			context.write(key, SUM);
 		}
 	}
