@@ -2,6 +2,7 @@ package hk.ust.comp4651;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -94,7 +95,7 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 				sum += iter.next().get();
 			}
 			// Handle marginal helper keys
-      if (key.getRightElement == "") {
+      if (key.getRightElement() == "") {
         marginal = sum;
       } else {
         VALUE.set(sum / marginal);
