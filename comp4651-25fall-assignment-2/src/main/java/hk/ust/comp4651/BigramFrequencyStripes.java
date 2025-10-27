@@ -106,14 +106,15 @@ public class BigramFrequencyStripes extends Configured implements Tool {
       for (int count : SUM_STRIPES.values()) {
         marginal += count;
       }
-      for (Entry<String, Integer> mapElement : SUM_STRIPES.entrySet()) { 
-        String second_w = (String) mapElement.getKey(); 
-        int value = (int) mapElement.getValue();
-        BIGRAM.set(first_w, second_w);
-        FREQ.set(value / marginal);
-        context.write(BIGRAM, FREQ);
+      if (marginal != 0) {
+        for (Entry<String, Integer> mapElement : SUM_STRIPES.entrySet()) { 
+          String second_w = (String) mapElement.getKey(); 
+          int value = (int) mapElement.getValue();
+          BIGRAM.set(first_w, second_w);
+          FREQ.set(value / marginal);
+          context.write(BIGRAM, FREQ);
+        }
       }
-      
       SUM_STRIPES.clear();
 		}
 	}

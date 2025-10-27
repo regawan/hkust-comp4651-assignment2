@@ -97,7 +97,7 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 			// Handle marginal helper keys
       if (key.getRightElement() == "") {
         marginal = sum;
-      } else {
+      } else if (marginal != 0) {
         VALUE.set(sum / marginal);
 			  context.write(key, VALUE);
       }
