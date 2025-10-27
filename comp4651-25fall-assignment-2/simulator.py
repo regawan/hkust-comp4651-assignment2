@@ -30,10 +30,10 @@ def main():
                     print(f"[Guest] Executing: {instruction[0]}")
                     print(f"Accumulator value: {acc}")
                 case "scan_disk":
-                    print("[VMM] Executing: Trapped privileged instruction 'scan_disk', emulating...")
+                    print("[VMM] Trapped privileged instruction 'scan_disk', emulating...")
                     # Don't think I should implement scan disk function, so let's imagine it is scanning...
                 case "halt":
-                    print("[VMM] Executing: Trapped privileged instruction 'halt'. Halting guest.")
+                    print("[VMM] Trapped privileged instruction 'halt'. Halting guest.")
                     # Using break as a halt, sleep to make sure print shows before break
                     time.sleep(1)
                     break
