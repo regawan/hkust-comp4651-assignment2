@@ -172,7 +172,7 @@ public class Part_3 {
             delBySuffixRecursive(stPath, suffix);
         } else {
           // Only deletes files with suffix
-          if (stPath.getName().endsWith() == suffix) {
+          if (stPath.getName().endsWith(suffix)) {
             fs.delete(stPath, false);
           }
         }
