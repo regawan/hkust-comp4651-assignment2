@@ -63,6 +63,7 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 					}
 					BIGRAM.set(previous_word, w);
 					context.write(BIGRAM, ONE);
+          // Emit marginal count helper pair
           BIGRAM.set(previous_word, "");
 					context.write(BIGRAM, ONE);
           previous_word = w;
@@ -92,11 +93,12 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 			while (iter.hasNext()) {
 				sum += iter.next().get();
 			}
-			if (key.getRightElement == "") {
+			// Handle marginal helper keys
+      if (key.getRightElement == "") {
         marginal = sum;
       } else {
-        SUM.set(sum);
-			  context.write(key, SUM / marginal);
+        VALUE.set(sum / marginal);
+			  context.write(key, VALUE);
       }
 		}
 	}
@@ -111,7 +113,8 @@ public class BigramFrequencyPairs extends Configured implements Tool {
 			/*
 			 * TODO: Your implementation goes here.
 			 */
-			Iterator<IntWritable> iter = values.iterator();
+			// Simply reuse reducer of counter version
+      Iterator<IntWritable> iter = values.iterator();
 			int sum = 0;
 			while (iter.hasNext()) {
 				sum += iter.next().get();
